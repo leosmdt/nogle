@@ -117,7 +117,10 @@ class VisionServer
             '--threads', '8', '--parallel', '1', '--no-webui', '--image-max-tokens', '384',
         ]));
         $log = escapeshellarg("$this->dataDir/vision.log");
-        return (int) shell_exec("nohup $command >> $log 2>&1 & echo \$!");
+        // O filho herdaria os descritores abertos do PHP, inclusive o socket do servidor: o modelo prenderia
+        // a porta depois que o PHP saísse. O bash fecha todos acima de 2 e vira o modelo (exec), mantendo o PID.
+        $closeInherited = 'for fd in $(ls /dev/fd); do [ "$fd" -gt 2 ] && eval "exec $fd>&-"; done 2>/dev/null; ';
+        return (int) shell_exec('bash -c ' . escapeshellarg("{$closeInherited}exec nohup $command >> $log 2>&1") . ' & echo $!');
     }
 
     protected function alive(int $pid): bool
