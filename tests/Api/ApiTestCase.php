@@ -10,6 +10,7 @@ use Nogle\Ai\VisionServer;
 use Nogle\App;
 use Nogle\Clients\ClientRepository;
 use Nogle\Database;
+use Nogle\DatabaseUnavailable;
 use Nogle\Http\Request;
 use PHPUnit\Framework\TestCase;
 
@@ -33,7 +34,11 @@ abstract class ApiTestCase extends TestCase
     public static function setUpBeforeClass(): void
     {
         self::$db = Database::fromEnvironment();
-        self::$db->migrate();
+        try {
+            self::$db->migrate();
+        } catch (DatabaseUnavailable $error) {
+            self::fail($error->getMessage() . ' Suba o MySQL dos testes com: docker compose up -d db');
+        }
     }
 
     protected function setUp(): void
@@ -45,6 +50,7 @@ abstract class ApiTestCase extends TestCase
     protected static function makeApp(ClientRepository $clients): App
     {
         return new App($clients, self::offlineAi(), dirname(__DIR__, 2) . '/public', static function (): void {
+            // Logger mudo: os erros 500 provocados de propósito nos testes não poluem a saída do PHPUnit.
         });
     }
 
