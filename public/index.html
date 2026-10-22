@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#15162c">
+  <title>Clientes | Nogle</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%235b5bd6'/%3E%3Cpath d='M18 46V18h7l14 18.2V18h7v28h-7L25 27.8V46z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+  <script src="/dashboard.js" defer></script>
+  <script src="/assistant.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Nogle">
+      <span class="sidebar-glow" aria-hidden="true"></span>
+      <a class="brand" href="#" aria-label="Nogle, início"><span class="brand-mark" aria-hidden="true">N</span><span class="brand-copy"><strong>Nogle</strong><small>Customer OS</small></span></a>
+      <div class="sidebar-bottom"><span class="side-avatar" aria-hidden="true">N</span><span><strong>Desafio prático</strong><small>Gestão de clientes</small></span></div>
+    </aside>
+
+    <main class="main-content">
+      <section class="view" id="view-clientes" aria-labelledby="page-title">
+        <header class="page-heading">
+          <div>
+            <span class="page-kicker">Gestão de clientes</span>
+            <h1 id="page-title">Clientes</h1>
+            <p class="subtitle"><span class="summary-chip"><span id="stat-label">Clientes ativos</span> <strong id="client-count">—</strong></span> <span class="shortcut-hint">Atalhos: <kbd>N</kbd> novo · <kbd>/</kbd> buscar</span></p>
+          </div>
+          <button class="button button-primary" id="new-client" type="button"><span class="plus" aria-hidden="true">+</span> Novo cliente</button>
+        </header>
+        <section class="kpis kpi-strip" aria-label="Indicadores principais">
+          <article class="kpi kpi-hero"><span class="kpi-icon" aria-hidden="true">↗</span><span class="kpi-label">Clientes ativos</span><strong class="kpi-value" id="kpi-ativos">—</strong><span class="kpi-note" id="kpi-ativos-note"></span></article>
+          <article class="kpi"><span class="kpi-icon" aria-hidden="true">◎</span><span class="kpi-label">Total cadastrado</span><strong class="kpi-value" id="kpi-total">—</strong><span class="kpi-note">ativos e inativos</span></article>
+          <article class="kpi"><span class="kpi-icon" aria-hidden="true">–</span><span class="kpi-label">Inativos</span><strong class="kpi-value" id="kpi-inativos">—</strong><span class="kpi-note" id="kpi-taxa"></span></article>
+          <article class="kpi"><span class="kpi-icon" aria-hidden="true">+</span><span class="kpi-label">Novos este mês</span><strong class="kpi-value" id="kpi-novos">—</strong><span class="kpi-note" id="kpi-novos-delta"></span></article>
+        </section>
+
+        <section class="panel" aria-labelledby="list-title">
+          <div class="panel-top">
+            <h2 id="list-title" class="visually-hidden">Lista de clientes</h2>
+            <div class="tabs" role="group" aria-label="Status dos clientes"><button class="tab active" type="button" data-status="ativos" aria-pressed="true">Ativos</button><button class="tab" type="button" data-status="inativos" aria-pressed="false">Inativos</button></div>
+            <form class="filters" id="filter-form" role="search">
+              <label class="search-field"><span class="visually-hidden">Nome do cliente</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="filter-name" name="nome" type="search" placeholder="Buscar por nome" autocomplete="off"></label>
+              <label class="search-field cpf"><span class="visually-hidden">CPF</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="filter-cpf" name="cpf" type="search" placeholder="CPF" inputmode="numeric" maxlength="14"></label>
+              <button class="text-button" id="clear-filters" type="button" hidden>Limpar filtros</button>
+            </form>
+            <div class="panel-tools"><button class="button button-ghost" id="import-clients" type="button"><span aria-hidden="true">↑</span> Importar CSV</button><button class="button button-ghost" id="export-clients" type="button"><span aria-hidden="true">↓</span> Exportar</button><button class="button button-ghost" id="open-charts" type="button"><span aria-hidden="true">▤</span> Dashboard</button><input id="import-file" type="file" accept=".csv,text/csv" hidden aria-label="Selecionar arquivo CSV"></div>
+          </div>
+          <div class="table-scroll"><table><thead><tr><th scope="col">Cliente</th><th scope="col">CPF</th><th scope="col">Telefone</th><th scope="col">Endereço</th><th scope="col" class="actions-heading"><span class="visually-hidden">Ações</span></th></tr></thead><tbody id="client-rows"></tbody></table></div>
+          <div class="empty-state" id="empty-state" hidden><div class="empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/></svg></div><h3 id="empty-title">Nenhum cliente encontrado</h3><p id="empty-description">Cadastre seu primeiro cliente para começar.</p><button class="button button-primary" id="empty-new" type="button">+ Novo cliente</button></div>
+          <div class="panel-footer"><span id="result-count">Carregando clientes...</span><span>Resultados atualizados ao digitar</span></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="client-modal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description">
+      <header class="modal-header"><div><h2 id="modal-title">Novo cliente</h2><p id="modal-description">Preencha os dados para cadastrar um cliente.</p></div><button class="close-button" id="close-modal" type="button" aria-label="Fechar modal">×</button></header>
+      <form id="client-form" novalidate>
+        <div class="modal-body"><div class="form-grid">
+          <div class="form-field full"><label for="nome">Nome do cliente <span>*</span></label><input id="nome" name="nome" required maxlength="180" placeholder="Nome completo" autocomplete="name"></div>
+          <div class="form-field"><label for="cpf">CPF <span>*</span></label><input id="cpf" name="cpf" required inputmode="numeric" maxlength="14" placeholder="000.000.000-00"></div>
+          <div class="form-field"><label for="telefone">Telefone <span>*</span></label><input id="telefone" name="telefone" required inputmode="tel" maxlength="15" placeholder="(00) 00000-0000" autocomplete="tel"></div>
+        </div><div class="form-section-title">Endereço</div><div class="form-grid">
+          <div class="form-field"><label for="cep">CEP <span>*</span></label><input id="cep" name="cep" required inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="postal-code"><small id="cep-help">Digite o CEP para buscar o endereço.</small></div>
+          <div class="form-field"><label for="cidade">Cidade <span>*</span></label><input id="cidade" name="cidade" required maxlength="180" placeholder="Cidade" autocomplete="address-level2"></div>
+          <div class="form-field"><label for="estado">Estado (UF) <span>*</span></label><input id="estado" name="estado" required maxlength="2" placeholder="UF" autocomplete="address-level1"></div>
+          <div class="form-field"><label for="bairro">Bairro <span>*</span></label><input id="bairro" name="bairro" required maxlength="180" placeholder="Bairro" autocomplete="address-level3"></div>
+          <div class="form-field full"><label for="endereco">Endereço <span>*</span></label><input id="endereco" name="endereco" required maxlength="180" placeholder="Rua, avenida..." autocomplete="street-address"></div>
+          <div class="form-field"><label for="numero">Número <span>*</span></label><input id="numero" name="numero" required maxlength="180" placeholder="Número"></div>
+          <div class="form-field"><label for="complemento">Complemento <span class="optional">opcional</span></label><input id="complemento" name="complemento" maxlength="180" placeholder="Apto, bloco..."></div>
+        </div><p class="form-error" id="form-error" role="alert" hidden></p></div>
+        <footer class="modal-footer"><span>* obrigatório · <kbd>Ctrl</kbd> + <kbd>Enter</kbd> salva</span><div><button class="button button-ghost" id="cancel-modal" type="button">Cancelar</button><button class="button button-ghost" id="save-and-new" type="button">Salvar e novo</button><button class="button button-primary" id="save-client" type="submit">Salvar cliente</button></div></footer>
+      </form>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toast-message"></span><button id="toast-undo" type="button" hidden>Desfazer</button></div>
+  <div class="modal-backdrop" id="charts-modal" hidden>
+    <section class="modal charts-modal" role="dialog" aria-modal="true" aria-labelledby="charts-title">
+      <header class="modal-header"><div><h2 id="charts-title">Dashboard</h2><p id="dashboard-updated">Clientes ativos por estado e cidade</p></div><button class="close-button" id="close-charts" type="button" aria-label="Fechar dashboard">×</button></header>
+      <div class="modal-body">
+        <section class="charts">
+          <article class="card chart-card" aria-labelledby="estado-title">
+            <header class="card-header"><div><h2 id="estado-title">Clientes ativos por estado</h2><p id="estado-subtitle">Distribuição por UF</p></div><button class="view-toggle" type="button" data-chart="estado" aria-pressed="false">Ver tabela</button></header>
+            <div class="bar-chart" id="chart-estado"></div>
+          </article>
+          <article class="card chart-card" aria-labelledby="cidade-title">
+            <header class="card-header"><div><h2 id="cidade-title">Cidades com mais clientes ativos</h2><p>As 8 primeiras</p></div><button class="view-toggle" type="button" data-chart="cidade" aria-pressed="false">Ver tabela</button></header>
+            <div class="bar-chart" id="chart-cidade"></div>
+          </article>
+        </section>
+      </div>
+    </section>
+  </div>
+  <div class="chart-tooltip" id="chart-tooltip" aria-hidden="true" hidden></div>
+  <div class="floating-actions">
+    <button class="tour-launcher" id="restart-onboarding" type="button" title="Rever o tour guiado"><span aria-hidden="true">?</span> Tour</button>
+    <button class="assistant-launcher" id="assistant-launcher" type="button" aria-controls="assistant-panel" aria-expanded="false"><span aria-hidden="true">✦</span> Assistente</button>
+  </div>
+  <section class="assistant-panel" id="assistant-panel" aria-label="Assistente de clientes" hidden>
+    <header class="assistant-header"><div><span class="assistant-symbol" aria-hidden="true">✦</span><div><strong>Assistente Nogle</strong><small id="assistant-mode">Verificando IA local...</small></div></div><button id="assistant-close" type="button" aria-label="Fechar assistente">×</button></header>
+    <p class="assistant-draft"><strong>Esboço:</strong> ideia de uso de IA dentro do CRUD. Nos testes foi usada uma IA local; a proposta é usar uma API externa.</p>
+    <div class="assistant-messages" id="assistant-messages" role="log" aria-live="polite"><div class="assistant-message bot">Olá! Posso buscar clientes e responder sobre eles, cadastrar, editar, inativar, reativar, contar e exportar. Pergunte, por exemplo, o telefone de alguém ou quem mora em uma cidade.</div></div>
+    <div class="assistant-suggestions" id="assistant-suggestions"><button type="button" data-command="Contatos dos clientes">Contatos dos clientes</button><button type="button" data-command="Mostrar inativos">Mostrar inativos</button><button type="button" data-command="Novo cliente">Novo cliente</button></div>
+    <form class="assistant-form" id="assistant-form"><input id="assistant-input" type="text" autocomplete="off" placeholder="Ex.: buscar João ou cadastrar Ana" aria-label="Pedido para o assistente"><button class="assistant-photo" id="assistant-photo" type="button" aria-label="Cadastrar a partir de uma foto" title="Cadastrar a partir de uma foto" hidden>📎</button><input id="assistant-photo-input" type="file" accept="image/jpeg,image/png,image/webp" hidden><button class="assistant-mic" id="assistant-mic" type="button" aria-label="Falar comando" title="Falar comando" hidden>🎙</button><button class="assistant-send" type="submit" aria-label="Enviar pedido">➤</button></form>
+    <p class="assistant-note">A IA roda nesta máquina. A transcrição de voz depende do navegador e pode usar um serviço externo.</p>
+  </section>
+</body>
+</html>

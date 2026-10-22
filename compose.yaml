@@ -1,0 +1,35 @@
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: nogle
+      MYSQL_USER: nogle
+      MYSQL_PASSWORD: nogle
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    ports:
+      # Porta 3307 no host para não colidir com um MySQL já instalado na máquina.
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql-init.sql:/docker-entrypoint-initdb.d/01-banco-de-testes.sql:ro
+    healthcheck:
+      # Durante a inicialização o MySQL roda sem rede; o ping por TCP só responde quando ele está pronto.
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-unogle", "-pnogle", "--silent"]
+      interval: 2s
+      timeout: 3s
+      retries: 60
+
+  app:
+    build: .
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+    ports:
+      # Porta no host configurável: APP_PORT=8080 docker compose up
+      - "127.0.0.1:${APP_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mysql-data:

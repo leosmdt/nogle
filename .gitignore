@@ -1,0 +1,17 @@
+# Dependências de desenvolvimento (composer install)
+vendor/
+.phpunit.cache/
+
+# Logs, PID e modelos baixados pela IA local
+data/
+.runtime/
+*.log
+
+# Vídeo de demonstração: enviado separadamente, fora do repositório
+docs/
+
+# Saída de ferramentas locais
+graphify-out/
+
+# Sistema
+.DS_Store

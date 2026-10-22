@@ -1,0 +1,6 @@
+.git
+data
+.runtime
+vendor
+graphify-out
+.phpunit.cache

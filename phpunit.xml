@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         failOnWarning="true"
+         failOnDeprecation="true"
+         failOnNotice="true">
+    <testsuites>
+        <testsuite name="Nogle">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <!-- Os testes da API usam um banco separado, criado por docker/mysql-init.sql. -->
+        <env name="DB_NAME" value="nogle_test" force="true"/>
+    </php>
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
+</phpunit>
